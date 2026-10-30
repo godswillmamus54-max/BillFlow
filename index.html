@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10251f"><meta name="description" content="BillFlow helps small businesses create invoices, quotes and receipts, track payments and follow up with customers.">
+<title>BillFlow — Invoices & payment tracking</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="#" aria-label="BillFlow home"><span class="brand-mark">B</span><span>bill<span class="brand-accent">flow</span></span></a><div class="top-actions"><span id="storageStatus" class="status-pill"><i></i> Saved on this device</span><button id="exportData" class="btn btn-quiet">Export backup</button><label class="btn btn-quiet file-label">Import backup<input id="importData" type="file" accept="application/json" hidden></label></div></header>
+<main class="shell">
+<section class="hero"><div><p class="eyebrow">YOUR BUSINESS, IN BETTER FLOW</p><h1>Get paid for the work<br class="desktop-only"> you do.</h1><p class="hero-copy">Create professional invoices, send them to customers, and keep an eye on every payment — without the paperwork.</p></div><button id="newDoc" class="btn btn-primary"><span>＋</span> Create document</button></section>
+<section class="metrics" aria-label="Business summary"><article class="metric"><span class="metric-label">Total billed</span><strong id="totalBilled">₦0</strong><span class="metric-foot">Across all documents</span></article><article class="metric"><span class="metric-label">Collected</span><strong id="totalPaid">₦0</strong><span class="metric-foot">Payments recorded</span></article><article class="metric metric-warn"><span class="metric-label">Still to collect</span><strong id="totalDue">₦0</strong><span class="metric-foot">Unpaid balances</span></article><article class="metric"><span class="metric-label">Documents</span><strong id="docCount">0</strong><span class="metric-foot">Invoices, quotes & receipts</span></article></section>
+<div class="workspace"><section class="panel document-panel"><div class="panel-head"><div><p class="eyebrow">WORKSPACE</p><h2>Your documents</h2></div><div class="filters"><input id="search" type="search" placeholder="Search name or number…" aria-label="Search documents"><select id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="unpaid">Unpaid</option><option value="partial">Part-paid</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select></div></div><div id="documents" class="documents"><div class="empty-state"><div class="empty-icon">▤</div><h3>Your next invoice starts here</h3><p>Create your first document to keep your business organized.</p><button class="btn btn-primary" id="emptyNew">Create first document</button></div></div></section>
+<aside class="side-column"><section class="panel"><div class="panel-head"><div><p class="eyebrow">SETUP</p><h2>Business profile</h2></div><span class="round-icon">✳</span></div><form id="profileForm" class="form-stack"><label>Business name<input id="bizName" placeholder="e.g. Meme Collectionz" required></label><div class="two-col"><label>Phone / WhatsApp<input id="bizPhone" type="tel" placeholder="+234…"></label><label>Email<input id="bizEmail" type="email" placeholder="you@business.com"></label></div><label>Business address<input id="bizAddress" placeholder="City, country (optional)"></label><div class="two-col"><label>Currency<select id="currency"><option value="NGN">NGN — ₦</option><option value="USD">USD — $</option><option value="GBP">GBP — £</option><option value="EUR">EUR — €</option><option value="GHS">GHS — GH₵</option><option value="KES">KES — KSh</option></select></label><label>Payment details<input id="paymentDetails" placeholder="Bank / payment instructions"></label></div><button class="btn btn-secondary" type="submit">Save business profile</button></form></section>
+
+<section class="panel customers-panel">
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">RELATIONSHIPS</p>
+      <h2>Customers</h2>
+    </div>
+    <span id="customerCount" class="count-chip">0</span>
+  </div>
+
+  <label class="customer-search-label" for="customerSearch">
+    Search customers
+  </label>
+
+  <input
+    id="customerSearch"
+    type="search"
+    class="customer-search"
+    placeholder="Search by name, phone or email..."
+    aria-label="Search customers"
+  >
+
+  <div id="customersList" class="customers-list">
+    <p class="muted small">
+      Customers appear here when you create documents.
+    </p>
+  </div>
+
+  <p id="customerSearchEmpty" class="muted small" hidden>
+    No matching customers found.
+  </p>
+</section>
+<section class="panel reminder-panel"><div class="panel-head"><div><p class="eyebrow">FOLLOW-UP</p><h2>Payment reminders</h2></div><span class="round-icon">↗</span></div><p class="muted small">Reminders are prepared for you to send. BillFlow does not message customers automatically.</p><div id="reminderList" class="reminder-list"><p class="muted small">No outstanding invoices yet.</p></div></section></aside></div>
+<footer><span>BillFlow · Simple tools for small business</span><div><a href="privacy.html" target="_blank">Privacy</a><button id="installBtn" class="text-button" hidden>Install app</button></div></footer>
+</main>
+<dialog id="docDialog" class="modal"><form id="docForm" class="modal-card"><div class="modal-head"><div><p class="eyebrow">DOCUMENT BUILDER</p><h2 id="dialogTitle">Create document</h2></div><button type="button" id="closeDialog" class="close-btn" aria-label="Close">×</button></div><div class="form-grid"><label>Type<select id="docType"><option value="Invoice">Invoice</option><option value="Quote">Quote</option><option value="Receipt">Receipt</option></select></label><label>Issue date<input id="issueDate" type="date" required></label><label>Customer name<input id="customer" placeholder="Customer or company" required></label><label>Customer phone / WhatsApp<input id="contact" type="tel" placeholder="+234…"></label><label>Customer email<input id="customerEmail" type="email" placeholder="customer@example.com"></label><label>Due date<input id="dueDate" type="date"></label></div><div class="items-header"><h3>Line items</h3><button type="button" id="addItem" class="text-button">＋ Add line</button></div><div class="line-labels"><span>Description</span><span>Qty</span><span>Unit price</span><span></span></div><div id="items" class="items-list"></div><div class="form-grid bottom-fields"><label>Tax (%)<input id="taxRate" type="number" min="0" max="100" step="0.01" value="0"></label><label>Discount<input id="discount" type="number" min="0" step="0.01" value="0"></label><label>Amount paid<input id="amountPaid" type="number" min="0" step="0.01" value="0"></label><label>Recurring<select id="recurring"><option value="none">Does not repeat</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></label></div><p id="recurringPreview" class="recurring-preview" hidden></p><label class="full-label">Notes / payment instructions<textarea id="notes" rows="3" placeholder="Thank you for your business. Payment due within 7 days."></textarea></label><div class="totals-box"><div><span>Subtotal</span><strong id="subtotal">₦0</strong></div><div><span>Tax</span><strong id="taxAmount">₦0</strong></div><div><span>Discount</span><strong id="discountAmount">₦0</strong></div><div class="grand-total"><span>Total</span><strong id="previewTotal">₦0</strong></div></div><div class="modal-actions"><button type="button" id="cancelDoc" class="btn btn-secondary">Cancel</button><button type="submit" class="btn btn-primary">Save document</button></div><p class="fine-print">Data is stored in this browser on this device. Export a backup regularly.</p></form></dialog>
+<dialog id="detailDialog" class="modal">
+  <div class="modal-card detail-card">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow">DOCUMENT DETAILS</p>
+        <h2 id="detailTitle">Invoice</h2>
+      </div>
+      <button id="closeDetail" class="close-btn" aria-label="Close">×</button>
+    </div>
+    <div id="detailBody"></div>
+    <div class="modal-actions action-wrap">
+      <button id="printDoc" class="btn btn-secondary">Print / Save PDF</button>
+      <button id="shareWhatsApp" class="btn btn-secondary">Share on WhatsApp</button>
+      <button id="emailReminder" class="btn btn-secondary">Email reminder</button>
+      <button id="markPaid" class="btn btn-primary">Record payment</button>
+    </div>
+  </div>
+</dialog>
+<dialog id="paymentDialog" class="modal"><form id="paymentForm" class="modal-card compact-card"><div class="modal-head"><h2>Record a payment</h2><button type="button" id="closePayment" class="close-btn">×</button></div><p id="paymentContext" class="muted"></p><label>Payment amount<input id="paymentAmount" type="number" min="0.01" step="0.01" required></label><label>Payment date<input id="paymentDate" type="date" required></label><label>Method / reference<input id="paymentMethod" placeholder="Transfer, cash, reference…"></label><div class="modal-actions"><button type="button" id="cancelPayment" class="btn btn-secondary">Cancel</button><button type="submit" class="btn btn-primary">Save payment</button></div></form></dialog>
+<dialog id="customerDialog" class="detail-dialog">
+  <div class="dialog-head">
+    <div>
+      <p class="eyebrow">CUSTOMER MANAGEMENT</p>
+      <h2 id="customerProfileName">Customer profile</h2>
+    </div>
+    <button
+      type="button"
+      id="closeCustomerDialog"
+      class="icon-btn"
+      aria-label="Close customer profile"
+    >×</button>
+  </div>
+  <div id="customerProfileBody"></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite" class="toast"></div><script src="app.js"></script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+
+</body>
+</html>
